@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  back:
+    build: ./backend
+    command: npm run dev
+    ports:
+      - 4000:4000
+    environment:
+      PG_PASSWORD: pass
+      PG_DB: school
+      PG_USER: postgres
+      PG_HOST: db
+    volumes:
+      - .:/code
+    networks:
+      - mern-app
+
+  front:
+    build: ./front
+    stdin_open: true
+    tty: true
+    command: yarn start
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/code
+    networks:
+      - mern-app
+
+  db:
+    image: "postgres"
+    environment:
+      POSTGRES_PASSWORD: pass
+      POSTGRES_USER: postgres
+      POSTGRES_DB: school
+    ports:
+      - 5432:5432
+    networks:
+      - mern-app
+
+networks:
+  mern-app:
+    driver: bridge
